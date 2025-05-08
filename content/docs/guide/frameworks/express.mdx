@@ -1,0 +1,49 @@
+---
+title: Express js
+description: This example shows how to use the decoval library with Express.js to validate data from a POST request. The User class uses @DvText decorators to define validation rules for name, email, and password. The decoValidation function automatically validates the data based on these annotations. If the data is valid, the server returns validated JSON; otherwise, it issues a 400 error. This approach keeps validation separate from routing logic, making it easier to reuse and organize code in modern REST APIs.
+---
+
+```ts title="main.ts"
+import express, { Request, Response } from "express";
+import cors from "cors";
+import morgan from "morgan";
+import { DvText } from "./dv/dv.text";
+import { decoValidation } from "decoval";
+
+const app = express();
+app.use(express.json()).use(cors()).use(morgan("dev"));
+
+class User {
+  @DvText()
+  name!: string;
+
+  @DvText({ specialChar: true })
+  password!: string;
+
+  @DvText({ emailProviders: "gmail.com" })
+  email!: string;
+}
+
+type TUser<T> = {
+  [K in keyof T]: T[K];
+};
+
+app.post("/", async (req: Request<{}, {}, TUser<User>>, res: Response) => {
+  try {
+    const { email, name, password } = req.body;
+    const user = new User();
+    user.email = email;
+    user.name = name;
+    user.password = password;
+
+    const data = await decoValidation(user);
+    res.status(201).json(data);
+  } catch (error) {
+    res.status(400).json(error);
+  }
+});
+
+const port: number = 4000;
+
+app.listen(port, () => console.log(port));
+```

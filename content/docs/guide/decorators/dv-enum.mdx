@@ -1,0 +1,25 @@
+---
+title: "@DvEnum"
+description: Decorator for validating whether a value belongs to a specific enum or a set of values.
+---
+
+# `@DvEnum`
+
+The `@DvEnum` decorator validates whether a property’s value belongs to a predefined set of values, either an array or an object-based enum. If the value is not among the specified ones, a validation error is thrown.
+
+## Usage
+
+```ts
+import "reflect-metadata";
+import { DvEnum } from "decoval";
+
+enum Status {
+  ACTIVE = "active",
+  INACTIVE = "inactive",
+}
+
+class Example {
+  @DvEnum({ values: Status })
+  status: string;
+}
+```

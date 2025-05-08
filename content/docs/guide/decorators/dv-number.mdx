@@ -1,0 +1,81 @@
+---
+title: "@DvNumber"
+description: "Validate number fields with minimum, maximum, positive, multipleOf, and more."
+---
+
+## @DvNumber Decorator
+
+The @DvNumber() decorator validates numeric fields with various constraints such as min, max, positive, negative, integer, and more. It is part of the decoval validation library and supports advanced customization, default values, and conflict detection.
+
+## Basic Usage
+
+The **DvNumber** decorator allows you to validate strings with several rules:
+
+```ts title="main.ts"
+import "reflect-metadata";
+import { DvNumber } from "decoval";
+
+class SampleDto {
+  @DvNumber({ min: 1, max: 100 })
+  age: number;
+}
+```
+
+| Option       | Description                                     | Example          |
+| ------------ | ----------------------------------------------- | ---------------- |
+| `min`        | Minimum value allowed                           | `min: 1`         |
+| `max`        | Maximum value allowed                           | `max: 100`       |
+| `positive`   | Requires the number to be positive              | `positive: true` |
+| `negative`   | Requires the number to be negative              | `negative: true` |
+| `multipleOf` | Number must be a multiple of the provided value | `multipleOf: 5`  |
+| `equals`     | Must be exactly equal to the given value        | `equals: 42`     |
+| `notEquals`  | Must not be equal to the given value            | `notEquals: 0`   |
+| `finite`     | Ensures the number is finite                    | `finite: true`   |
+| `safe`       | Must be a safe integer (`Number.isSafeInteger`) | `safe: true`     |
+| `integer`    | Requires the number to be an integer            | `integer: true`  |
+| `optional`   | Allows undefined/null/empty values              | `optional: true` |
+| `empty`      | Allows an empty string (`""`)                   | `empty: true`    |
+| `null`       | Allows a null value                             | `null: true`     |
+
+<Callout title="Conflicts are automatically detected. For example:" type="error">
+  - positive and negative cannot be used together
+  - equals and notEquals are mutually exclusive
+  - optional, empty, and null cannot be combined
+
+</Callout>
+
+### Example with Conflicts
+
+```ts title="main.ts"
+// ❌ This will throw a conflict error
+@DvNumber({ optional: true, null: true })
+amount: number;
+```
+
+### Default Values
+
+Some options have default values:
+
+- optional: false
+- empty: false
+- null: false
+- positive: false
+- negative: false
+- integer: false
+- finite: false
+- safe: false
+
+## Error Messages
+
+Each constraint can receive a custom message:
+
+```ts title="main.ts"
+@DvNumber({ min: { value: 3, message: "Minimum is 3" } })
+age: number;
+```
+
+### Summary
+
+The @DvNumber() decorator offers precise and extensible number validation. It is ideal for DTOs where numeric integrity and clarity are essential.
+
+For reusable and safe data schemas, decoval brings TypeScript-centric validation to the next level.

@@ -1,0 +1,215 @@
+---
+title: "@DvText"
+---
+
+Learn how to use the DvText decorator to validate strings in your classes.
+
+## Basic Usage
+
+The DvText decorator allows you to validate strings with several rules:
+
+```ts title="main.ts"
+import "reflect-metadata";
+import { DvText } from "decoval";
+
+class User {
+  @DvText({ minLength: 3, maxLength: 20 })
+  username!: string;
+}
+
+const user = new User();
+user.username = "john_doe"; // Valid
+// user.username = "jo"; // Invalid: too short
+// user.username = "this_username_is_too_long"; // Invalid: too long
+```
+
+<Callout>Some properties already have predefined default values: maxLength: 40; minLength: 3;</Callout>
+
+```ts title="main.ts"
+import { DvText } from "decoval";
+
+class User {
+  @DvText()
+  username!: string;
+}
+
+const user = new User();
+user.username = "john_doe"; // Valid
+// user.username = "jo"; // Invalid: too short
+// user.username = "this_username_is_too_long"; // Invalid: too long
+```
+
+## Advanced Options
+
+### Email Validation
+
+You can validate emails and restrict to specific providers::
+
+```ts title="main.ts"
+import "reflect-metadata";
+import { DvText } from "decoval";
+
+class User {
+  @DvText({
+    emailProviders: ["gmail.com", "outlook.com", "hotmail.com"],
+    lowercase: true,
+    noSpaces: true,
+  })
+  email!: string;
+}
+
+const user = new User();
+user.email = "john.doe@gmail.com"; // Valid
+// user.email = "john.doe@yahoo.com"; // Invalid: Provider not allowed
+// user.email = "John.Doe@gmail.com"; // Invalid: contains capital letters
+```
+
+### Validation with Regex
+
+Use regular expressions for more complex validations:
+
+```ts tile="main.ts"
+import "reflect-metadata";
+import { DvText } from "decoval";
+
+class Document {
+  @DvText({
+    regex: [/^[A-Z]{2}\d{9}$/],
+    message: "Document ID must be 2 capital letters followed by 9 digits",
+  })
+  documentId!: string;
+}
+
+const doc = new Document();
+doc.documentId = "AB123456789"; // Valid
+// doc.documentId = "A1234567890"; // Invalid: does not match the pattern
+```
+
+### Complexity Requirements
+
+Set complexity requirements for passwords and other fields:
+
+```ts title="main.ts"
+import "reflect-metadata";
+import { DvText } from "decoval";
+
+class User {
+  @DvText({
+    minLength: 8,
+    number: true,
+    specialChar: true,
+    noSpaces: true,
+    message:
+      "The password must be at least 8 characters long, include numbers and special characters, and not contain spaces.",
+  })
+  password!: string;
+}
+
+const user = new User();
+user.password = "Secure@123"; // Valid
+// user.password = "password"; // Invalid: No numbers or special characters
+// user.password = "pass word"; // Invalid: contains spaces
+```
+
+### Optional Fields
+
+Mark fields as optional, but still apply validations when filled in:
+
+```ts title="main.ts"
+import "reflect-metadata";
+import { DvText } from "decoval";
+
+class User {
+  @DvText({
+    optional: true,
+    minLength: 5,
+    maxLength: 50,
+  })
+  bio?: string;
+}
+
+const user = new User();
+// user.bio = undefined; // Valid: field is optional
+user.bio = "TypeScript Developer"; // Valid
+// user.bio = "Dev"; // Invalid: too short
+```
+
+### Custom Error Messages
+
+Customize error messages for each validation:
+
+```ts title="main.ts"
+import "reflect-metadata";
+import { DvText } from "decoval";
+
+class User {
+  @DvText({
+    minLength: { value: 3, message: "Username too short! Minimum {value} characters." },
+    maxLength: { value: 20, message: "Username too long! Maximum {value} characters." },
+    noSpaces: { value: true, message: "Username cannot contain spaces." },
+  })
+  username!: string;
+}
+```
+
+### Complete Example
+
+```ts title="main.ts"
+import "reflect-metadata";
+import { DvText, decoValidation } from "decoval";
+
+class User {
+  @DvText({ noSpaces: true })
+  username!: string;
+
+  @DvText({
+    emailProviders: ["gmail.com", "outlook.com"],
+    lowercase: true,
+    noSpaces: true,
+  })
+  email!: string;
+
+  @DvText({
+    minLength: 8,
+    number: true,
+    specialChar: true,
+    noSpaces: true,
+  })
+  password!: string;
+
+  @DvText({
+    optional: true,
+    maxLength: 200,
+  })
+  bio?: string;
+}
+
+const user = new User();
+user.username = "john_doe";
+user.email = "john.doe@gmail.com";
+user.password = "Secure@123";
+user.bio = "TypeScript developer passionate about data validation.";
+
+decoValidation(user)
+  .then(() => console.log("Valid user!"))
+  .catch((error) => console.error("Validation error:", error.message));
+```
+
+### Quick Reference
+
+### Validation Options (`ValText`)
+
+| Option           | Description                                       | Example                         |
+| ---------------- | ------------------------------------------------- | ------------------------------- |
+| `minLength`      | Minimum length of the string                      | `minLength: 3`                  |
+| `maxLength`      | Maximum length of the string                      | `maxLength: 20`                 |
+| `empty`          | Allows empty string                               | `empty: true`                   |
+| `null`           | Allows null value                                 | `null: true`                    |
+| `optional`       | Marks the field as optional                       | `optional: true`                |
+| `lowercase`      | Requires the string to be in lowercase            | `lowercase: true`               |
+| `uppercase`      | Requires the string to be in uppercase            | `uppercase: true`               |
+| `number`         | Requires the string to contain numeric characters | `number: true`                  |
+| `specialChar`    | Requires the string to contain special characters | `specialChar: true`             |
+| `noSpaces`       | Disallows spaces in the string                    | `noSpaces: true`                |
+| `emailProviders` | List of allowed email providers                   | `emailProviders: ["gmail.com"]` |
+| `regex`          | Regular expressions for custom validation         | `regex: [/^[A-Z]2\\d9$/]`       |

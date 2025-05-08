@@ -1,0 +1,52 @@
+---
+title: "@DvURL"
+description: Validate string fields to ensure they contain a valid URL.
+---
+
+## `@DvURL`
+
+The `@DvURL` decorator validates whether a field contains a valid URL string.
+
+### Usage
+
+```ts
+import "reflect-metadata";
+import { DvURL } from "decoval";
+
+class Website {
+  @DvURL()
+  websiteUrl: string;
+}
+```
+
+### Options
+
+| Option      | Type      | Default                                     | Description                |
+| ----------- | --------- | ------------------------------------------- | -------------------------- |
+| `message`   | `string`  | `The "<field>" field must be a valid URL` | Custom error message.      |
+| `allowNull` | `boolean` | `true`                                      | Whether `null` is allowed. |
+
+### Behavior
+
+- Ignores validation if the value is:
+  - `null` and `allowNull` is `true`
+  - `undefined`
+  - an empty string
+- Throws a `ValidationError` if the value:
+  - is not a string
+  - does not match the URL regex pattern
+
+### Example
+
+```ts
+import "reflect-metadata";
+import { DvURL } from "decoval";
+
+class Config {
+  @DvURL({ allowNull: false })
+  homepage: string;
+
+  @DvURL({ message: "Please enter a valid website link." })
+  supportPage: string;
+}
+```

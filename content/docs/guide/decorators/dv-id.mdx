@@ -1,0 +1,82 @@
+---
+
+title: "@DvId"
+description: "Validate ID fields such as UUID, Mongo ObjectId, numeric strings, or custom patterns."
+----------------------------------------------------------------------------------------------------
+
+
+## @DvId Decorator
+
+The `@DvId()` decorator is used to validate identifiers such as UUIDs, MongoDB ObjectIds, numeric strings, or custom-defined patterns via regex. It belongs to the `decoval` validation library and supports type-specific validation, conflict prevention, and extensibility.
+
+### Basic Usage
+
+```ts
+import "reflect-metadata";
+import { DvId } from "decoval"
+
+class ResourceDto {
+  @DvId({ type: "uuid" })
+  resourceId: string;
+}
+```
+
+### Options
+
+| Option     | Description                                                                | Example                   |
+| ---------- | -------------------------------------------------------------------------- | ------------------------- |
+| `type`     | Type of ID to validate: `uuid`, `mongo`, or `number`                       | `type: "uuid"`            |
+| `regex`    | A regular expression or object to define custom pattern validation         | `regex: /^[a-z]{3}-\d+$/` |
+| `optional` | Allows `undefined` values (conflicts with `null`)                          | `optional: true`          |
+| `null`     | Allows `null` values (conflicts with `optional`)                           | `null: true`              |
+| `empty`    | Allows empty string values `""` (cannot be combined with a defined `type`) | `empty: true`             |
+
+> ⚠️ **Conflicts are automatically detected:**
+>
+> * `optional` and `null` cannot be used together
+> * `empty` and `type` cannot be combined
+> * `regex` and `type` should not be used simultaneously
+
+### Example with Custom Regex
+
+```ts
+class CustomIdDto {
+  @DvId({ regex: /^[a-z]{3}-\d+$/ })
+  customId: string;
+}
+```
+
+### Example with Mongo ID
+
+```ts
+class UserDto {
+  @DvId({ type: "mongo" })
+  userId: string;
+}
+```
+
+### Default Values
+
+* `optional: false`
+* `null: false`
+* `empty: false`
+
+### Error Messages
+
+You can pass custom error messages via `regex.message`:
+
+```ts
+@DvId({
+  regex: {
+    value: /^ABC\d{3}$/,
+    message: "The ID must follow the ABC format."
+  }
+})
+code: string;
+```
+
+### Summary
+
+The `@DvId()` decorator enables strong validation for various ID formats, ensuring structural correctness and preventing invalid identifiers from being accepted. It provides flexibility with regular expressions and robust conflict handling for safe schema design.
+
+---

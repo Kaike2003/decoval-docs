@@ -1,0 +1,41 @@
+---
+title: "decoValidation"
+description: Function that validates all decorated fields of an instance, applying each rule and collecting errors.
+---
+
+The `decoValidation()` function is responsible for validating all decorated properties in a class instance. It applies the associated validation functions and returns a `Promise` that resolves if there are no validation errors or rejects with a map of errors if any are found.
+
+## Basic Usage
+
+```ts
+import "reflect-metadata";
+import { decoValidation, DvText, DvNumber } from "decoval";
+
+class User {
+  @DvText()
+  name: string;
+
+  @DvNumber()
+  age: number;
+}
+
+async function validateUser() {
+  const user = new User();
+  user.name = "";
+  user.age = "not a number" as any;
+
+  try {
+    await decoValidation(user);
+  } catch (errors) {
+    console.log(errors);
+    // {
+    //   name: ['The "name" field cannot be empty'],
+    //   age: ['The "age" field must be a valid number']
+    // }
+  }
+}
+```
+
+**Summary**
+
+Applies all registered validations to a decorated class instance and returns a promise that resolves or rejects based on validation results.

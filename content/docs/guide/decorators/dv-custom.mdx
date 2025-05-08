@@ -1,0 +1,57 @@
+---
+title: "@DvCustom"
+description: "Apply custom validation rules to any field with support for multiple rules and custom error messages."
+---
+
+## @DvCustom Decorator
+
+The `@DvCustom()` decorator allows you to define one or more custom validation rules using functions. It is part of the **decoval** library and enables advanced and flexible validation logic for any type of field.
+
+## Basic Usage
+
+The **DvCustom** decorator accepts one or multiple validation rules, each with a `validate` function and an associated error `message`.
+
+```ts title="main.ts"
+import "reflect-metadata";
+import { DvCustom } from "decoval";
+
+class UserDto {
+  @DvCustom({
+    validate: (value) => value.startsWith("user_"),
+    message: "The username must start with 'user_'.",
+  })
+  username: string;
+}
+```
+
+| **Option** | **Description**                   | **Example**                                          |
+| ---------- | --------------------------------- | ---------------------------------------------------- |
+| `validate` | Function to evaluate the field    | `validate: (v) => v.length > 5`                      |
+| `message`  | Custom error message for the rule | `message: "Value must be longer than 5 characters."` |
+
+### Multiple Rules
+
+You can apply multiple validation rules to a single field by passing an array of rule objects:
+
+```ts
+import "reflect-metadata";
+import { DvCustom } from "decoval";
+
+class ProfileDto {
+  @DvCustom([
+    {
+      validate: (v) => v >= 18,
+      message: "The user must be at least 18 years old.",
+    },
+    {
+      validate: (v) => v <= 65,
+      message: "The user must be at most 65 years old.",
+    },
+  ])
+  age: number;
+}
+```
+
+### Summary
+
+@DvCustom() provides powerful, reusable validation logic tailored to your specific needs. It’s perfect for handling complex domain rules that cannot be covered by standard validators.

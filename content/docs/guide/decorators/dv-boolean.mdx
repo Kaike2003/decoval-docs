@@ -1,0 +1,45 @@
+---
+title: "@DvBoolean"
+description: "Validate boolean fields with optional, null, empty, and custom message support."
+---
+
+## @DvBoolean Decorator
+
+The @DvBoolean() decorator validates boolean fields (true or false) and allows customization of allowed values ​​such as undefined, null, and "". It is part of the decoval library.
+
+## Basic Usage
+
+The **DvNumber** decorator allows you to validate strings with several rules:
+
+```ts title="main.ts"
+import "reflect-metadata";
+import { DvBoolean } from "decoval;
+
+
+class SampleDto {
+  @DvBoolean()
+  isActive: boolean;
+}
+```
+
+| **Option** | **Description**      | **Example**        |
+| ---------- | -------------------- | ------------------ |
+| `message`  | Custom error message | `message: "Error"` |
+
+###
+
+Example with Special Permissions
+
+```ts title="main.ts"
+import "reflect-metadata";
+import { DvBoolean } from "decoval";
+
+class Form {
+  @DvBoolean({ optional: true, empty: true })
+  subscribed: boolean;
+}
+```
+
+### Summary
+
+@DvBoolean() provides simple and safe validation for boolean fields. Ideal for DTOs where logical values ​​need strict control without sacrificing flexibility.

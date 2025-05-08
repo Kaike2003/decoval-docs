@@ -1,0 +1,91 @@
+---
+title: Vue js
+description: This example shows how to use the decoval library with Vue 3 to validate forms. The User class is used with decorators like @DvText, allowing for reusable validations. onBlur triggers field-by-field validations, while submitForm performs full validation using decoValidation.
+---
+
+```ts title="src/models/User.ts"
+import { DvText } from "../dv/dv.text";
+
+export class User {
+  @DvText()
+  name!: string;
+
+  @DvText({ specialChar: true })
+  password!: string;
+
+  @DvText({ emailProviders: "gmail.com" })
+  email!: string;
+}
+```
+
+```ts title="form.vue"
+<script setup lang="ts">
+import { ref, reactive } from "vue";
+import { User } from "./models/User";
+import { decoValidation } from "./dv/dv.validation";
+
+const user = reactive<User>({
+  name: "",
+  password: "",
+  email: ""
+} as User);
+
+const errors = ref<Record<string, string[]>>({});
+
+const validateField = async (field: keyof User) => {
+  try {
+    const partial = new User();
+    partial[field] = user[field];
+    const result = await decoValidation(partial);
+    errors.value[field] = [];
+  } catch (err: any) {
+    errors.value[field] = err?.[field] || [];
+  }
+};
+
+const submitForm = async () => {
+  try {
+    const validated = await decoValidation(user);
+    alert("Usuário válido:\n" + JSON.stringify(validated, null, 2));
+  } catch (err: any) {
+    errors.value = err;
+  }
+};
+</script>
+
+<template>
+  <form @submit.prevent="submitForm" class="form">
+    <div>
+      <label>Nome:</label>
+      <input v-model="user.name" @blur="validateField('name')" />
+      <p v-if="errors.name" class="error" v-for="e in errors.name" :key="e">{{ e }}</p>
+    </div>
+
+    <div>
+      <label>Senha:</label>
+      <input type="password" v-model="user.password" @blur="validateField('password')" />
+      <p v-if="errors.password" class="error" v-for="e in errors.password" :key="e">{{ e }}</p>
+    </div>
+
+    <div>
+      <label>Email:</label>
+      <input v-model="user.email" @blur="validateField('email')" />
+      <p v-if="errors.email" class="error" v-for="e in errors.email" :key="e">{{ e }}</p>
+    </div>
+
+    <button type="submit">Enviar</button>
+  </form>
+</template>
+
+<style scoped>
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.error {
+  color: red;
+  font-size: 0.9rem;
+}
+</style>
+```

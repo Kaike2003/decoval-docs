@@ -1,0 +1,51 @@
+---
+title: "@DvIP"
+description: Validate if a field contains a valid IPv4 or IPv6 address.
+---
+
+## Description
+
+`@DvIP` is a decorator used to validate if a value is a valid IP address, supporting both IPv4 and IPv6 formats. You can specify the IP version or allow any version to be accepted.
+
+## Usage
+
+```ts
+import "reflect-metadata";
+import { DvIP } from "decoval";
+
+class NetworkConfig {
+  @DvIP()
+  ipAddress: string;
+
+  @DvIP({ version: "v6" })
+  ipv6Only: string;
+
+  @DvIP({ version: "any", message: "Invalid IP format." })
+  anyIp: string;
+}
+```
+
+## Options
+
+| Option  | Type                  | Default | Description                                          |
+| ------- | --------------------- | ------- | ---------------------------------------------------- |
+| version | "v4" \| "v6" \| "any" | "v4"    | The version of IP address to validate against.       |
+| message | `string`              | -       | Custom error message to display if validation fails. |
+
+## Conflicts
+
+There are no explicit conflict rules for `DvIP`, but it assumes the value is a string.
+
+## Notes
+
+- IPv4 and IPv6 validations are based on standard regular expressions.
+- If the version is set to "any", both IPv4 and IPv6 formats are accepted.
+- This decorator does not support validation of CIDR notation (e.g., `192.168.0.1/24`).
+
+## Example Output
+
+```ts
+const config = new NetworkConfig();
+config.ipAddress = "256.300.1.1"; // ❌ Invalid IPv4, will trigger validation error
+config.ipv6Only = "::1"; // ✅ Valid IPv6
+```

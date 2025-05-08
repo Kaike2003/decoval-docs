@@ -1,0 +1,39 @@
+---
+title: "@DvArray"
+description: Decorator for validating arrays with constraints such as min/max length, allowed types, and allowed values.
+summary: Validates array fields by checking type, minimum and maximum lengths, allowed element types, and accepted values.
+---
+
+The `@DvArray` decorator is used to validate array fields in your class. It checks for array structure, enforces length constraints, restricts element types, and ensures values are among allowed options.
+
+## Basic Usage
+
+```ts
+import "reflect-metadata";
+import { DvArray } from "decoval";
+
+class UserTags {
+  @DvArray()
+  tags: string[];
+}
+```
+
+| Option          | Type                                  | Description                                                          |
+| --------------- | ------------------------------------- | -------------------------------------------------------------------- |
+| `minLength`     | `{ value: number, message?: string }` | Minimum number of items required in the array.                       |
+| `maxLength`     | `{ value: number, message?: string }` | Maximum number of items allowed in the array.                        |
+| `elementsType`  | `{ value: string, message?: string }` | Restricts the type of each array element (`string`, `number`, etc.). |
+| `allowedValues` | `{ value: any[], message?: string }`  | Limits values to the specified ones only.                            |
+| `message`       | `string`                              | Default error message when validation fails.                         |
+
+### Error Handling
+
+If validation fails, a ValidationError is thrown:
+
+- "The array must contain at least 1 item."
+- "The elements must be of type number."
+- "The array contains values not allowed."
+
+### Summary
+
+Validates array fields by checking type, minimum and maximum lengths, allowed element types, and accepted values.

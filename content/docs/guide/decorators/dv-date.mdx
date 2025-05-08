@@ -1,0 +1,37 @@
+---
+title: "@DvDate"
+description: "Learn how to use the DvDate decorator to validate data in your classes."
+---
+
+Decorator that validates date fields and allows rules like minDate, maxDate, null, and empty values.
+
+## Basic Usage
+
+The **DvDate** decorator allows you to validate dates with several rules:
+
+```ts title="main.ts"
+import "reflect-metadata";
+import { DvDate } from "decoval";
+import { subYears } from "date-fns";
+
+const today = new Date();
+const minDate = subYears(today, 100);
+const maxDate = subYears(today, 18);
+
+class User {
+  @DvDate({ minDate, maxDate })
+  birthDate!: Date;
+}
+```
+
+| **Option** | **Description**      | **Example**                       |
+| ---------- | -------------------- | --------------------------------- |
+| `minDate`  | Minimum date allowed | `minDate: new Date("2023-01-01")` |
+| `maxDate`  | Maximum date allowed | `maxDate: new Date("2023-12-31")` |
+| `past`     | Custom error message | `past: true`                      |
+| `future`   | Custom error message | `future: true`                    |
+
+###
+
+**Summary**  
+ The `@DvDate()` decorator validates if a field is a valid JavaScript `Date`, supporting advanced constraints like minimum and maximum dates, or requiring the date to be in the past or future. Ideal for ensuring date consistency in DTOs and time-sensitive data structures.

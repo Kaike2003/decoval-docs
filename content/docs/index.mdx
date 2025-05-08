@@ -1,13 +1,80 @@
 ---
-title: Hello World
-description: Your first document
+title: Introduction
+description: Decoval is a modern approach to data validation in TypeScript based on the use of decorators. The term derives from the combination of Decorators and Validation, reflecting the main philosophy of the library to make data validation more declarative, expressive and decoupled from business logic.
 ---
 
-Welcome to the docs! You can start writing documents in `/content/docs`.
+## What is Decoval?
 
-## What is Next?
+DecoVal is a **decorator-driven validation pattern that allows you to add validation rules directly to the properties of TypeScript classes**, simplifying data control and increasing code readability and reusability.
+
+- **Clean syntax**: rules as notes, easy to read.
+- **Separation of concerns**: validation in the model, not in the logic.
+- **Reusable**: Easy to create and apply custom validators.
+- **Scalable**: ideal for projects with lots of data and rules.
+
+## 🧪 Try It Out
+
+This example uses Decoval decorators to validate a User model with strict input rules: username requires a number and no spaces, password needs a special character and no spaces, and status must be a boolean. Ideal for secure login or account creation flows.
+
+```ts title="main.ts"
+import { DvText, DvBoolean, decoValidation } from "decoval";
+
+class User {
+  @DvText({ noSpaces: true, number: true })
+  username!: string;
+
+  @DvText({ emailProviders: ["gmail.com", "yandex.com"] })
+  email!: string;
+
+  @DvText({ noSpaces: true, specialChar: true })
+  password!: string;
+
+  @DvBoolean()
+  status!: boolean;
+}
+
+const user = new User();
+user.username = "alberto2003";
+user.email = "next@gmail.com";
+user.password = "nextjs@google";
+user.status = true;
+
+decoValidation(user).then(console.log).catch(console.log);
+```
+
+## What Makes Decoval Different?
+
+Decoval offers a modern and elegant approach to data validation with decorators. With clean syntax, native **TypeScript** integration, support for country-specific validations, and ease of creating custom validators, it combines organization, scalability, and flexibility. Without relying on external schemas or heavy libraries, DecoVal is ideal for APIs, web applications, and enterprise systems that require clear, reusable, and model-centric rules.
+
+## Main Features
+
+Decoval is designed to provide a streamlined and powerful solution for data validation, ensuring maintainability, flexibility, and scalability. Here’s what makes it stand out:
 
 <Cards>
-  <Card title="Learn more about Next.js" href="https://nextjs.org/docs" />
-  <Card title="Learn more about Fumadocs" href="https://fumadocs.vercel.app" />
+  <Card title="Decorator-Based Syntax">
+    Write validation rules directly in your models using decorators, keeping your code clean and expressive
+  </Card>
+  <Card title="Built-in Country-Specific Validations">
+    Support for validating documents, phone numbers, emails, and other data types based on regional rules.
+  </Card>
+  <Card title="Fully Customizable Validators">
+    Easily create and apply custom validation rules to meet your specific needs.
+  </Card>
+  <Card title="Zero Dependencies">
+    Lightweight and dependency-free, DecoVal ensures fast, secure validation without adding unnecessary bloat.
+  </Card>
 </Cards>
+
+## DecoVal vs Class Validator
+
+A basic comparison between **DecoVal** and **Class Validator**, focusing on simplicity, performance, and developer experience when working with data validation using decorators in TypeScript.
+
+### Feature Comparison
+
+| Feature         | **DecoVal**                          | **Class Validator**                         |
+| --------------- | ------------------------------------ | ------------------------------------------- |
+| `Syntax`        | Simple and intuitive decorators      | Decorators, but more verbose                |
+| `Ease of Use`   | Easy to use and understand           | More complex, especially for advanced types |
+| `Extensibility` | Easy to create custom validators     | Extensible, but requires more configuration |
+| `Performance`   | Better performance due to simplicity | Can be slower due to complex schema logic   |
+| `Type Support`  | Full support for TypeScript types    | TypeScript support, but less advanced       |
