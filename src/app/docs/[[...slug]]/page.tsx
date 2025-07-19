@@ -14,7 +14,7 @@ export default async function Page(props: { params: Promise<{ slug?: string[] }>
   return (
     <DocsPage toc={page.data.toc} full={page.data.full}>
       <DocsTitle>{page.data.title}</DocsTitle>
-      <DocsDescription className="text-base text-gray-700 dark:text-[#b5b5b1]">{page.data.description}</DocsDescription>
+      <DocsDescription className="text-base">{page.data.description}</DocsDescription>
       <DocsBody className="prose prose-neutral dark:prose-invert">
         <MDXContent
           components={getMDXComponents({
